@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Voter Info</title>
+	<style type="text/css">
+		table.tableFormat tr td { font-size: 13px; color: #000000; font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif; }
+
+		.tableFormat{
+			width:100%; 
+			border-collapse:collapse; 
+		}
+
+		/*  Define the background color for all the ODD table columns  */
+		.tableFormat tr td:nth-child(odd){ 
+			background: #FFFFFF;
+		}
+		/*  Define the background color for all the EVEN table columns  */
+		.tableFormat tr td:nth-child(even){
+			background: #fafafa;
+		}
+	</style>	
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		Number.prototype.pad = function(size) {
+		  var s = String(this);
+		  while (s.length < (size || 2)) {s = "0" + s;}
+		  return s;
+		}
+
+		var GetURLParameter = function(sParam) {
+		    var sPageURL = window.location.search.substring(1);
+		    var sURLVariables = sPageURL.split('&');
+		    for (var i = 0; i < sURLVariables.length; i++) 
+		    {
+		        var sParameterName = sURLVariables[i].split('=');
+		        if (sParameterName[0] == sParam) 
+		        {
+		            return sParameterName[1];
+		        }
+		    }
+		}
+
+		var queryDateFormat = function(d) {
+			return d.getUTCFullYear()+'-'+(d.getUTCMonth()+1).pad(2)+'-'+d.getUTCDate().pad(2)+' '+d.getUTCHours().pad(2)+':'+d.getUTCMinutes().pad(2);
+		}
+
+		var buildQuery = function(start, end, rangeType,producer) {
+			var host = 'https://m3p4ruyb1i.execute-api.us-east-1.amazonaws.com';
+			var uri = '/dev/voter';
+			var queryString = '?startDateTime='+start+'&endDateTime='+end+'&rangeType='+rangeType+'&networkId=eosprod&producer='+producer;
+			console.log(queryString);
+			return host+uri+queryString;
+		}					
+
+		Date.prototype.addHours = function(h) {    
+		   this.setTime(this.getTime() + (h*60*60*1000)); 
+		   return this;   
+		}
+
+		$(document).ready(function() {
+		 	var timeslot = GetURLParameter('timeslot');
+		 	var producer = GetURLParameter('producer');
+		 	//var startDate = new Date(timeslot);
+		 	var startDate = new Date(timeslot).addHours(-1);
+
+			//var MS_PER_MINUTE = 60000;
+			var endDate = new Date(startDate).addHours(2);
+
+
+			console.log("startDate = "+ startDate);
+			console.log("endDate = "+endDate);			
+
+			var url = buildQuery(queryDateFormat(startDate),queryDateFormat(endDate),'oneHour',producer);
+			
+			var info = document.getElementById("info");
+			//info.innerHTML = JSON.stringify(url);	
+
+			$.getJSON(url, function(data) {
+				//info.innerHTML = JSON.stringify(data);	
+				var message = document.getElementById("message");
+				message.innerHTML = "";
+
+				var summary = document.getElementById("summary");
+				summary.innerHTML = '<pre>'+data.changes.Summary + '</pre>';				
+		
+				var table = document.getElementById("myTable");
+				var colCount = 0;
+				$.each(data.voterData, function(k, timepoint) {
+					colCount++;
+					var rowCount = 0;
+
+					if(colCount == 1) {
+						row = table.insertRow();
+						var cell1 = row.insertCell();
+
+					} else {
+						row = table.rows[rowCount];
+					}
+					var cell1 = row.insertCell();
+
+					//k is the UTC formatted time. We need to convert it to local time. 
+					var utcSeconds = Date.parse(k);
+					var d = new Date(utcSeconds);
+
+					var options = {  
+					    month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"  
+					};  
+
+					cell1.innerHTML = '<b>'+k+'</b>';
+					//cell1.innerHTML = '<b>'+d.toLocaleTimeString("en-us", options)+'</b>';
+
+
+					$.each(timepoint, function(a, datapoint) {
+						rowCount++;
+						var row;					
+						if(colCount == 1) {
+							row = table.insertRow();
+							var cell1 = row.insertCell();
+							//cell1.innerHTML = colCount + '-' + rowCount;
+							cell1.innerHTML = '<b>'+rowCount+'</b>';
+
+						} else {
+							row = table.rows[rowCount];
+							if (typeof row == 'undefined') {
+								//row = table.insertRow();
+								return false;
+
+							}			
+						}
+						
+						var cell1 = row.insertCell();
+						//cell1.innerHTML = colCount + '-' + rowCount;
+						cell1.innerHTML = datapoint.voter + ', <font color=red>'+Math.floor(datapoint.staked / 10000) +'</font>';
+
+
+					});
+
+				});
+			});
+
+		});
+	</script>
+</head>
+<body>
+	<div id="info"><b>Summary:</div></b></div>
+	<div id="message">Loading ... hang tight, there's a lot of data to load.</div>
+
+	<div id="summary" ></div>
+
+	<table id="myTable" class='tableFormat'></table>
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117985821-3"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-117985821-3');
+	</script>
+
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+
+		Number.prototype.pad = function(size) {
+		  var s = String(this);
+		  while (s.length < (size || 2)) {s = "0" + s;}
+		  return s;
+		}
+
+		var queryDateFormat = function(d) {
+			return d.getUTCFullYear()+'-'+(d.getUTCMonth()+1).pad(2)+'-'+d.getUTCDate().pad(2)+' '+d.getUTCHours().pad(2)+':'+d.getUTCMinutes().pad(2);
+		}
+
+		var highlight = function(producer) {
+			var table = document.getElementById("myTable");
+			for (var i = 0, row; row = table.rows[i]; i++) {
+			   for (var j = 0, col; col = row.cells[j]; j++) {
+			     if(row.cells[j].producerName == producer) {
+			     	row.cells[j].style.backgroundColor = "yellow";	
+			     } else {
+			     	row.cells[j].style.backgroundColor = "white";	
+			     }
+			   }  
+			}
+		}
+
+		var numberWithCommas = function(x) {
+		    x = x.toString();
+		    var pattern = /(-?\d+)(\d{3})/;
+		    while (pattern.test(x))
+		        x = x.replace(pattern, "$1,$2");
+		    return x;
+		}
+
+		$( document ).ready(function() {
+/*			
+			var endDate = new Date();
+			var MS_PER_MINUTE = 60000;
+			var startDate = new Date(endDate - 60 * MS_PER_MINUTE);
+			
+			console.log(queryDateFormat(startDate));
+			console.log(queryDateFormat(endDate));
+*/
+			var buildQuery = function(start, end, rangeType) {
+				//'https://vizjxg7feb.execute-api.us-east-1.amazonaws.com/dev?startDateTime=2018-06-05%2004:20&endDateTime=2018-06-05%2005:15&rangeType=fiveMinute&networkId=jungletestnet'
+				var host = 'https://m3p4ruyb1i.execute-api.us-east-1.amazonaws.com';
+				var uri = '/dev/producer';
+				var queryString = '?startDateTime='+start+'&endDateTime='+end+'&rangeType='+rangeType+'&networkId=eosprod';
+				return host+uri+queryString;
+			}			
+
+			var rangeTypeWrapper = function(rangeType) {
+				var urlParams = new URLSearchParams(window.location.search);
+				var endDateParam = urlParams.get('endDateParam');
+				console.log('endDateParam'+endDateParam);
+				var d2 = new Date(endDateParam);
+				console.log('d2'+d2);
+				if(endDateParam) {
+					var endDate = new Date(endDateParam);
+				} else {
+					var endDate = new Date();
+				}
+
+				
+
+				if(rangeType=='fiveMinute') {
+					console.log('fiveMinute');
+					var MS_PER_MINUTE = 60000;
+					var startDate = new Date(endDate - 60 * MS_PER_MINUTE);
+					
+					console.log(queryDateFormat(startDate));
+					console.log(queryDateFormat(endDate));
+
+					return buildQuery(queryDateFormat(startDate),queryDateFormat(endDate),'fiveMinute');
+				} else {
+					console.log('oneHour');
+					var MS_PER_MINUTE = 60000;
+					var startDate = new Date(endDate - 60*7 * MS_PER_MINUTE);
+					
+					console.log('startDate: '+queryDateFormat(startDate));
+					console.log('endDate: '+queryDateFormat(endDate));
+
+					return buildQuery(queryDateFormat(startDate),queryDateFormat(endDate),'oneHour');
+				}
+			}
+
+			var u = rangeTypeWrapper('oneHour');
+			console.log(u);
+			$.getJSON(u, function(data) {
+			
+				var message = document.getElementById("message");
+				message.innerHTML = "";
+				
+			    // Find a <table> element with id="myTable":
+				var table = document.getElementById("myTable");
+				var colCount = 0;
+
+				for (var i = Object.keys(data).length - 1; i >= 0; i--) {
+					
+					const k = Object.keys(data)[i];
+
+					var timepoint = Object.create(data[Object.keys(data)[i]]);
+					//console.log(data[k]);				
+				//}
+
+
+				//$.each(data, function(k, timepoint) {
+					colCount++;
+					var rowCount = 0;
+
+					if(colCount == 1) {
+						row = table.insertRow();
+						var cell1 = row.insertCell();
+						//cell1.innerHTML = "Local Time ->";					
+
+					} else {
+						row = table.rows[rowCount];
+
+					}
+					var cell1 = row.insertCell();
+
+					//k is the UTC formatted time. We need to convert it to local time. 
+					var utcSeconds = Date.parse(k);
+					var d = new Date(utcSeconds);
+
+					var options = {  
+					    month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"  
+					};  
+
+					//cell1.innerHTML = '<b>'+k+'</b>';
+					cell1.innerHTML = '<center><b>'+d.toLocaleTimeString("en-us", options)+'</b><br>'+k+'<br>&nbsp</center>';
+
+
+
+
+
+					$.each(timepoint, function(a, datapoint) {
+						rowCount++;
+						var row;					
+						if(colCount == 1) {
+							row = table.insertRow();
+							var cell1 = row.insertCell();
+							//cell1.innerHTML = colCount + '-' + rowCount;
+							cell1.innerHTML = '<b>'+rowCount+'</b>';
+
+						} else {
+							row = table.rows[rowCount];
+							if (typeof row == 'undefined') {
+								//row = table.insertRow();
+								return false;
+
+							}							
+						}
+
+
+						if(datapoint.diffVoterEOSStake > 0) {
+							var diffVoterEOSStake = '&nbsp;(<font size=2 color="green">+'+numberWithCommas(Math.floor(datapoint.diffVoterEOSStake/10000))+'</font>)';
+						}
+						else{
+							var diffVoterEOSStake = '&nbsp;(<font size=2 color="red">'+numberWithCommas(Math.floor(datapoint.diffVoterEOSStake/10000))+'</font>)';
+						}
+
+
+						if(datapoint.diffVoterCount > 0) {
+							var diffVoterCount = '&nbsp;(<font size=2 color="green">+'+numberWithCommas(datapoint.diffVoterCount)+'</font>)';
+						}
+						else {
+							var diffVoterCount = '&nbsp;(<font size=2 color="red">'+numberWithCommas(datapoint.diffVoterCount)+'</font>)';
+						}
+
+
+						
+						var cell1 = row.insertCell();
+						cell1.producerName = datapoint.producer;
+						cell1.style.lineHeight = "1";
+						//cell1.innerHTML = colCount + '-' + rowCount;
+						cell1.innerHTML = '<center><b>'+datapoint.producer +'</b></center><br>'+ 
+							'<font size=2>'+
+							'EOS:&nbsp;'+numberWithCommas(Math.floor(datapoint.totalVoterEOSStake/10000)) +diffVoterEOSStake+'<br>'+ 
+							'<font size=2>'+
+							'Voters: '+numberWithCommas(datapoint.totalVoterCount) +'</font>'+diffVoterCount;
+						cell1.onmouseover = 
+						     function() { 
+						     	this.style.cursor = "pointer";
+						         //console.log("something " + k + "-" + datapoint.producer);
+						         highlight(datapoint.producer);
+						     };
+						cell1.onclick = 
+						     function() { 
+						         console.log("something " + k + "-" + datapoint.producer);
+						         window.open('/html/VoterInfo.html?timeslot='+k+'&producer='+datapoint.producer,'_blank');
+						     };
+
+					});
+
+				//});
+				}
+
+			})
+			.fail(function(jqXHR, textStatus, errorThrown) {
+				var message = document.getElementById("message");
+				console.log(errorThrown);
+				message.innerHTML = '<font color=red> Something seems to have gone wrong while fetching the data. Please refresh the page and if you get this message again please let us know so we can investigate (We are probably already doing that).</font> Error message: ' + textStatus +' - Data URL: ' + u;
+			});
+
+		});
+
+	</script>
+
+	<div id="message">Loading ... hang tight, there's a lot of data to load.</div>
+	<table id="myTable" class='tableFormat'></table>
+

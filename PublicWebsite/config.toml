@@ -1,0 +1,29 @@
+languageCode = "en-US"
+defaultContentLanguage = "en"
+
+title = "EOS blockchain snapshots"
+theme = "hugo-theme-learn"
+metaDataFormat = "yaml"
+defaultContentLanguageInSubdir= true
+
+[blackfriday]
+  hrefTargetBlank = false
+
+[params]
+  editURL = "https://github.com/eosnewyork/eossnapshots.io/tree/master/PublicWebsite/content/"
+  description = "eossnapshots.io - EOS blockchain snapshots"
+  author = "Warrick FitzGerald"
+  showVisitedLinks = false
+  disableLanguageSwitchingButton = true
+  themeVariant = "mine"
+
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+[Languages]
+[Languages.en]
+title = "eossnapshots.io - EOS blockchain snapshots"
+weight = 1
+languageName = "English"
+
