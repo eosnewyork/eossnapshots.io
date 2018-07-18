@@ -15,7 +15,7 @@ phases:
   post_build:
     commands:
       - echo about to sync to S3 
-      - aws s3 sync ./PublicWebsite/public "s3://${BUCKET_NAME}" --delete
+      - aws s3 sync ./PublicWebsite/public "s3://${BUCKET_NAME}" --delete --exclude 'data/*'
       - echo after sync to S3 
 artifacts:
   files:
