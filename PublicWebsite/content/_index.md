@@ -6,8 +6,9 @@ title: "Home"
 
 ## Summary
 
-This is a project maintained by EOS New York proides Snapshots of the EOS Blockchain. 
+This is a project maintained by EOS New York proides Snapshots of the EOS Blockchain.  
 
-<center>
-<a href="https://www.eosnewyork.io/"><img src="images/EOSNewYork.jpg"></a>	
-</center>
+Below is a directory listing of all available snapshots.  
+
+{{< snapshotlisting >}}
+

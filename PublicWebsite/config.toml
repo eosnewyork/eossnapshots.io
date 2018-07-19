@@ -16,6 +16,8 @@ defaultContentLanguageInSubdir= true
   showVisitedLinks = false
   disableLanguageSwitchingButton = true
   themeVariant = "mine"
+  disableShortcutsTitle = true
+  disableSearch = false
 
 
 [outputs]
