@@ -61,6 +61,6 @@ Two EOS New York team members wrote the same export in two different programming
 #### Is the sourcode available?
 
 Yes, the following projects are available for review:   
-1. Server plugin which exports a global list of accounts - coming soon  
+1. Server plugin which exports a global list of accounts - https://github.com/deckb/eos/tree/master/plugins/account_snapshot_plugin  
 2. Python script with collects the account information - https://github.com/eosnewyork/eosio/tree/master/scripts/snapshots  
 3. .NET core application which collects the account information - https://github.com/eosnewyork/EOSAccountInfo
