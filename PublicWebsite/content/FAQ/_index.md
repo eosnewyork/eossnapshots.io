@@ -9,7 +9,7 @@ weight: 5
 #### How are these files generated?
 
 1. A sever side plugin running within nodeos writes to a log file every time an account is created.    
-2. A nightly script then runs through that list and collects information about each account.   
+2. A nightly script then runs between 00:01 - 01:00 UTC through that list and collects information about each account.   
 2.1 Only accounts created before midnight that day are considered.  
 2.2 Account Balance + EOS Staked against CPU + EOS Staked against Network + Any EOS pending return to the account via refund/unstaking. 
 
@@ -19,13 +19,13 @@ A common mistake is thinking that a command like this, will return all accounts
 ```
 cleos get table eosio eosio voters -l 100
 ```
-Users calling this command will observe that there are entries in the table, where that account has NOT voted.  
+Users calling this command will observe that there are entries in the table where that account has NOT voted.  
 
-So the natural assuption is that the table contains all accounts, those that have NOT voted +  those that have.  
+So the natural assumption is that the table contains all accounts, those that have NOT voted + those that have.  
 
-This is incorrect, as soon as an account has staked EOS, they will show in this table. Since all Genesis users had their EOS staked, they all show up in this voters table .... but any account created after launch of the network that has not staked EOS / voted, will not be listed in this table. 
+Unfortunately, this is incorrect since as soon as an account has staked EOS, they will show in this table. Since all the Genesis users had their EOS tokens staked, they all show up in this voters table. But, any account created after the Genesis launch of the network that had not staked their EOS tokens and voted, will not be listed in this table. 
 
-At the time of writing our tool exports 273,634 accounts. This is 69,488 more records than the voter table. 
+At the time of writing (July 29, 2018) our tool exports 273,634 accounts. This is 69,488 more records than the current voter table. 
 
 {{% notice warning %}}
 If you're using the voter table as the source of data for your airdrop, about 70,000 accounts will miss out on your airdrop.
@@ -33,7 +33,7 @@ If you're using the voter table as the source of data for your airdrop, about 70
 
 #### Should I airdrop to ALL the accounts in the provided files?
 
-On main consideration is the fact that these also contain records for system accounts. These can be identified by "eosio.*"
+Our main consideration is the fact that these also contain records for system accounts. These can be identified by "eosio.*"
 
 {{% notice info %}}
 The below accounts are system accounts. Most users of the data will want to exclude eosio.*
@@ -56,7 +56,7 @@ eosio.vpay,23619.4660
 
 #### How has the data been validated?
 
-Two EOS New York team members wrote the same export in two differnce programming languages. Both applications were run against the same nodeos instance and the outputs were confirmed to be identical. 
+Two EOS New York team members wrote the same export in two different programming languages, Python and .NET. Both applications were run against the same nodeos instance and the outputs were confirmed to be identical. 
 
 #### Is the sourcode available?
 
