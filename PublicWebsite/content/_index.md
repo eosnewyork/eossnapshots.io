@@ -6,7 +6,7 @@ title: "Home"
 
 ## Summary
 
-This is a project maintained by EOS New York and proides daily snapshots of the EOS Blockchain account holders. 
+This is a project maintained by EOS New York and provides daily snapshots of the EOS Blockchain account holders. 
 
 Below is a directory listing of all available snapshots.  
 
