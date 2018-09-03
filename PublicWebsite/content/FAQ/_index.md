@@ -64,3 +64,7 @@ Yes, the following projects are available for review:
 1. Server plugin which exports a global list of accounts - https://github.com/deckb/eos/tree/master/plugins/account_snapshot_plugin  
 2. Python script with collects the account information - https://github.com/eosnewyork/eosio/tree/master/scripts/snapshots  
 3. .NET core application which collects the account information - https://github.com/eosnewyork/EOSAccountInfo
+
+#### Are EOS that are delegated included in the snapshot?
+
+No, EOS that are delegated to other accounts are not included in either account's balance. 
