@@ -11,7 +11,7 @@ weight: 5
 1. A sever side plugin runs within nodeos and writes to a log file every time an account is created.    
 2. A script runs each night between 00:01 - 01:00 UTC that collects information about each new account.   
 2.1 Only accounts created before midnight that day are considered.  
-2.2 Total Account Balance == EOS Staked against CPU + EOS Staked against Network + Any EOS pending return to the account via refund/unstaking. 
+2.2 Total Account Balance == EOS Staked against CPU + EOS Staked against Network + Any EOS pending return to the account via refund/unstaking or liquid tokens. 
 
 #### This seems like a lot of work, why can't I just export the voters table?
 
