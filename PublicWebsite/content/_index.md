@@ -24,7 +24,7 @@ Below is a directory listing of all available snapshots.
 
  In consideration for eossnapshots.io coordinating and supplying the "snapshot" data compiled from the public EOS Mainnet blockchain, the user, developer, or subscriber acknowledges and agrees that none of the suppliers of the snapshot: 
 
- (1) accept any responsibility or liability for the frequency of provision and accuracy of the snapshot or any use made of the snapshot by the user, developer, or subscriber, whether or not arising from the negligence of any of snapshot suppliers; or 
+ (1) accept any responsibility or liability for the frequency of provision and accuracy of the snapshot or any use made of the snapshot by the user, developer, or subscriber, whether or not arising from the negligence of any snapshot suppliers; or 
 
  (2) shall be liable for any loss of business nor any direct, indirect or consequential loss or damage resulting from any such irregularity, inaccuracy or use of the Information.
 </font>
