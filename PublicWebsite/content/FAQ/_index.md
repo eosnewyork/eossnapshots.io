@@ -67,4 +67,4 @@ Yes, the following projects are available for review:
 
 #### Are EOS that are delegated included in the snapshot?
 
-No, EOS that are delegated to other accounts are not included in either account's balance. 
+Yes, EOS that are delegated to other accounts are included. 
